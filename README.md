@@ -1,12 +1,5 @@
-# Apriori implementation
+# Data mining assignments
 
-author: Youngjin Kim (2016025241) - smilu2244@hanyang.ac.kr
+author: 2016025241 YJ Kim
+email: smilu2244@hanyang.ac.kr smilup2244@gmail.com
 
-[problem](./docs/assignment.pdf)
-
-## How to test
-
-```sh
-make
-./apriori 5 data/input.txt output.txt
-```
