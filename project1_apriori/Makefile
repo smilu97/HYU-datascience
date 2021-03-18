@@ -1,4 +1,4 @@
-CC := g++
+CC := g++ -std=c++17
 CFLAGS := -O2 -I src/headers/
 
 build:
