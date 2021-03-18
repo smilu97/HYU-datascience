@@ -30,11 +30,9 @@ std::vector<int> AprioriSolver::GetItemIds() const {
 ItemSetList AprioriSolver::GetSingleItemSetList() const {
     const auto item_ids = GetItemIds();
 
-    std::vector<ItemSet> vector_set;
-    for (auto id : item_ids) {
-        ItemSet set;
-        set.Add(id);
-        vector_set.push_back(set);
+    std::vector<ItemSet> vector_set(item_ids.size());
+    for (uint i = 0; i < item_ids.size(); i++) {
+        vector_set[i].Add(item_ids[i]);
     }
 
     return ItemSetList(vector_set);
@@ -43,9 +41,9 @@ ItemSetList AprioriSolver::GetSingleItemSetList() const {
 std::vector<int> AprioriSolver::GetSupports(const ItemSetList & set_list) const {
     std::vector<int> results;
     results.reserve(set_list.Size());
-    for (const auto & set: set_list) {
-        results.push_back(LookupSupport(set));
-    }
+    std::transform(set_list.begin(), set_list.end(), std::back_inserter(results), [this](const ItemSet & s) {
+        return this->LookupSupport(s);
+    });
     return results;
 }
 

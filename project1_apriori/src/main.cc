@@ -29,7 +29,7 @@ void SaveAprioriResults(
     ofs.close();
 }
 
-int main(int argc, const char** argv) {
+auto main(int argc, const char** argv) -> int {
     std::cout << "[Apriori] 2016025241 YJ Kim - 2021 DataScience - Hanyang Univ. CSE" << std::endl;
 
     if (argc < 4) {
