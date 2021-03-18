@@ -12,7 +12,10 @@ std::string ResultLineToString(const apriori::AprioriSolverResultLine & line) {
         + ToStringPercentage(line.confidence);
 }
 
-void SaveAprioriResults(const std::vector<apriori::AprioriSolverResultLine> & results, const std::string & output_filename) {
+void SaveAprioriResults(
+    const std::vector<apriori::AprioriSolverResultLine> & results,
+    const std::string & output_filename
+) {
     std::vector<std::string> lines;
     std::transform(results.begin(), results.end(), std::back_inserter(lines), ResultLineToString);
 
@@ -27,7 +30,7 @@ void SaveAprioriResults(const std::vector<apriori::AprioriSolverResultLine> & re
 }
 
 int main(int argc, const char** argv) {
-    std::cout << "[Apriori] 201625241 YJ Kim - 2021 DataScience - Hanyang Univ. CSE" << std::endl;
+    std::cout << "[Apriori] 2016025241 YJ Kim - 2021 DataScience - Hanyang Univ. CSE" << std::endl;
 
     if (argc < 4) {
         std::cout << "Usage: " << argv[0] << " minimum_support input_file_name output_file_name" << std::endl;
@@ -35,9 +38,9 @@ int main(int argc, const char** argv) {
     }
 
     int min_support = atoi(argv[1]);
-    if (min_support == 0) {
-        std::cout << "Error: Invalid minimum_support" << std::endl;
-        return  -1;
+    if (min_support <= 0) {
+        std::cout << "[Apriori][Error] Invalid minimum_support" << std::endl;
+        return -1;
     }
     std::cout << "[Apriori] Minimum support: " << min_support << "%\n";
 
