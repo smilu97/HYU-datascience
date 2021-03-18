@@ -1,4 +1,4 @@
-# Data mining assignments
+# Data science assignments
 
 author: 2016025241 YJ Kim
 
