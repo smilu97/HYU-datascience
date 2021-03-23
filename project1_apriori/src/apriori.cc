@@ -31,7 +31,7 @@ ItemSetList AprioriSolver::GetSingleItemSetList() const {
     const auto item_ids = GetItemIds();
 
     std::vector<ItemSet> vector_set(item_ids.size());
-    for (uint i = 0; i < item_ids.size(); i++) {
+    for (int i = 0; i < item_ids.size(); i++) {
         vector_set[i].Add(item_ids[i]);
     }
 
@@ -118,7 +118,7 @@ std::vector<AprioriSolverResultLine> AprioriSolver::Solve(int min_support) const
     return results;
 }
 
-uint AprioriSolver::Size() const { return records.size(); }
+unsigned int AprioriSolver::Size() const { return records.size(); }
 
 AprioriSolver::AprioriSolver(const std::string &path) {
     char * buf = new char[1024];

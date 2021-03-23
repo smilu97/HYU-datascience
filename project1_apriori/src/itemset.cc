@@ -35,7 +35,7 @@ std::string ItemSet::ToString() const {
     return result;
 }
 
-uint ItemSet::Size() const { return s.size(); }
+unsigned int ItemSet::Size() const { return s.size(); }
 
 ItemSet::ItemSet() {}
 ItemSet::ItemSet(std::vector<int> item_ids) {

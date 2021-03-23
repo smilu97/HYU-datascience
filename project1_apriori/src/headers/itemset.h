@@ -18,7 +18,7 @@ namespace apriori {
         ItemSet();
         ItemSet(std::vector<int> item_ids);
         ItemSet(const std::string & s);
-        uint Size() const;
+        unsigned int Size() const;
         void Add(int item_id);
         void AddAll(const ItemSet & tg);
         bool Included(const std::vector<int> & v) const;

@@ -37,7 +37,7 @@ namespace apriori {
     public:
         AprioriSolver(const std::string &path);
         std::vector<AprioriSolverResultLine> Solve(int min_support) const;
-        uint Size() const;
+        unsigned int Size() const;
     };
 
 }

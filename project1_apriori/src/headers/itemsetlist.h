@@ -17,7 +17,7 @@ namespace apriori {
         ItemSetList();
         ItemSetList(std::vector<ItemSet> sets);
         ItemSetList SelfJoin() const;
-        uint Size() const;
+        unsigned int Size() const;
 
         std::vector<ItemSet>::const_iterator begin() const { return sets.begin(); }
         std::vector<ItemSet>::const_iterator end()   const { return sets.end();   }

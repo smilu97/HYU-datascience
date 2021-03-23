@@ -5,7 +5,7 @@ using namespace apriori;
 ItemSetList::ItemSetList() {}
 ItemSetList::ItemSetList(std::vector<ItemSet> sets): sets(sets) {}
 
-uint ItemSetList::Size() const { return sets.size(); }
+unsigned int ItemSetList::Size() const { return sets.size(); }
 
 /*
  * TODO: O(N^4) Too slow algorithm
