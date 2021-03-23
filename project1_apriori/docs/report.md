@@ -88,6 +88,46 @@ bool ItemSet::Included(const std::vector<int> & v) const {
 
 support value를 확인하기 위해, Naive 한 방법으로 각 transaction 마다 해당 item set 을 포함하고 있는지 확인합니다. 각 확인 절차는 transaction의 길이가 N일 때, O(NlgN) 시간을 소요합니다.
 
+### Self-Join
+
+```cpp
+ItemSetList ItemSetList::SelfJoin() const {
+    const int n = sets.size();
+    std::vector<ItemSet> new_sets;
+    for (auto i = sets.begin(); i != sets.end(); i++) {
+        const int tg_size = i->Size() + 1;
+        auto j = i;
+        j++;
+        for (; j != sets.end(); j++) {
+            if (!(i->Similar(*j))) continue;
+            new_sets.push_back((*i) + (*j));
+        }
+    }
+    return new_sets;
+}
+
+bool ItemSet::Similar(const ItemSet &tg) const {
+    if (Size() != tg.Size()) return false;
+    const int n = Size();
+    auto it1 = begin(), it2 = tg.begin();
+    for (int i = 1; i < n; i++) {
+        if ((*it1) != (*it2)) return false;
+        ++it1;
+        ++it2;
+    }
+    return (*it1) != (*it2);
+}
+```
+
+item set list의 각 원소쌍에 대해서, 두 item set이 '비슷'하면 합쳐서 다음 회차에 사용합니다.
+
+여기서 '비슷'하다는, 길이 n의 두 ordered set에 대해서, 1~n-1번째 원소까지는 같지만 n번째 마지막
+원소만 다른 상태를 의미합니다.
+
+두 item set을 합친 n+1짜리 item set이 frequent 하다면, 위의 과정을 통해 단 한번,
+[i_1, i_2, ..., i_n, i_{n+1}] 이 있을 때, [i_1, i_2, ..., i_n]과 
+[i_1, i_2, ..., i_{n-1}, i_{n+1}] 이 합쳐져 등장하게 됩니다.
+
 ### Getting association rules from frequent set
 
 우리가 최종적으로 원하는 것은 {item_set, associative_item_set, support, confidence}로 이루어진 record list이므로, 각 frequent set, s가 있을 때, 합집합이 s와 같고 서로 독립인 두 개의 집합으로 나누는 모든 경우를 알아내야 합니다.

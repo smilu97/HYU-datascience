@@ -26,6 +26,18 @@ bool ItemSet::Equal(const ItemSet & tg) const {
     return true;
 }
 
+bool ItemSet::Similar(const ItemSet &tg) const {
+    if (Size() != tg.Size()) return false;
+    const int n = Size();
+    auto it1 = begin(), it2 = tg.begin();
+    for (int i = 1; i < n; i++) {
+        if ((*it1) != (*it2)) return false;
+        ++it1;
+        ++it2;
+    }
+    return (*it1) != (*it2);
+}
+
 std::string ItemSet::ToString() const {
     std::string result;
     for (auto id : s) {

@@ -15,6 +15,7 @@ namespace apriori {
         const std::set<int> & GetPrimitive() const;
         ItemSet Merged(const ItemSet & tg) const;
         bool Equal(const ItemSet &tg) const;
+        bool Similar(const ItemSet &tg) const;
         ItemSet();
         ItemSet(std::vector<int> item_ids);
         ItemSet(const std::string & s);
@@ -26,6 +27,8 @@ namespace apriori {
         ItemSet operator + (const ItemSet & tg) const;
         bool operator == (const ItemSet & tg) const;
         std::string ToString() const;
+        std::set<int>::const_iterator begin() const { return s.begin(); }
+        std::set<int>::const_iterator end()   const { return s.end(); }
     };
 
 }
