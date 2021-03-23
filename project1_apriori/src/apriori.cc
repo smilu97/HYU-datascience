@@ -14,6 +14,11 @@ int AprioriSolver::LookupSupport(const ItemSet & set) const {
     return count;
 }
 
+/**
+ * Find all ids from all transactions
+ * 
+ * @return unique ids which appears in transactions
+ */
 std::vector<int> AprioriSolver::GetItemIds() const {
     std::vector<int> item_ids;
     for (auto & i: records) {
@@ -27,6 +32,11 @@ std::vector<int> AprioriSolver::GetItemIds() const {
     return item_ids;
 }
 
+/**
+ * Find all ids from all transactions, and convert those into ItemSet
+ * 
+ * @return ItemSetList consist of single-length item sets
+ */
 ItemSetList AprioriSolver::GetSingleItemSetList() const {
     const auto item_ids = GetItemIds();
 
@@ -38,6 +48,13 @@ ItemSetList AprioriSolver::GetSingleItemSetList() const {
     return ItemSetList(vector_set);
 }
 
+/**
+ * Calculate supports of all item sets in list
+ * 
+ * @param set_list target item set list
+ * @return integer list which has same length of `set_list`.
+ *   Each integer value is the count of transactions which appeared the item set
+ */
 std::vector<int> AprioriSolver::GetSupports(const ItemSetList & set_list) const {
     std::vector<int> results;
     results.reserve(set_list.Size());
@@ -47,6 +64,15 @@ std::vector<int> AprioriSolver::GetSupports(const ItemSetList & set_list) const 
     return results;
 }
 
+/**
+ * Extract association rules from a frequent set.
+ * 
+ * @param set target frequent set
+ * @param support support value which should be calculated on previous steps
+ * @param support_map `frequent_set` to `support_value` dictionary.
+ *   should be cached on previous step.
+ *   Required for calculating confidence value
+ */
 std::vector<AprioriSolverResultLine> AprioriSolver::ExtractAssociationRules(
     const ItemSet & set,
     int support,
@@ -82,14 +108,35 @@ std::vector<AprioriSolverResultLine> AprioriSolver::ExtractAssociationRules(
     return result;
 }
 
+/**
+ * Extract all association rules satisfying minimum support from transaction
+ * 
+ * All transaction data must be already written from file system
+ * by creating AprioriSolver instance
+ * 
+ * @param min_support minimum support value. If `min_support` is 5, then
+ *   min support value is 5% (0.05)
+ * @return association rules satisfying minimum support value.
+ *   including support, confidence, item_set, associative_item_set
+ */
 std::vector<AprioriSolverResultLine> AprioriSolver::Solve(int min_support) const {
-    // Convert min_support value from floating percentage number into absolute count integer number
+    // Convert min_support value from floating percentage number
+    // into absolute count integer number
     min_support = (int) (((double) records.size() * min_support) / 100.0);
 
+    /*
+     * Collect every ids from all transactions, and convert those
+     * as single item sets
+     * etc) {{1},{2},{3},{4},...}
+     */
     ItemSetList set_list = GetSingleItemSetList();
 
+    // Container for collecting all frequent sets
     std::vector<ItemSet> frequent_sets;
+    // Container for collecting support of collected frequent sets
+    // above at the same index
     std::vector<int> frequent_supports;
+    // Dictionary for saving support of frequent set by stringified identifier
     std::map<std::string, int> support_map;
     while (true) {
         std::vector<int> support_list = GetSupports(set_list);
@@ -105,6 +152,7 @@ std::vector<AprioriSolverResultLine> AprioriSolver::Solve(int min_support) const
             }
         }
 
+        // Stop finding frequent set if all candidates are excluded
         if (new_sets.empty()) break;
 
         set_list = ItemSetList(new_sets).SelfJoin();
@@ -112,6 +160,8 @@ std::vector<AprioriSolverResultLine> AprioriSolver::Solve(int min_support) const
 
     std::vector<AprioriSolverResultLine> results;
     for (int i = 0; i < frequent_sets.size(); i++) {
+        // Extract all possible association rules from frequent set,
+        // and calculate confidence
         const auto rules = ExtractAssociationRules(frequent_sets[i], frequent_supports[i], support_map);
         std::copy(rules.begin(), rules.end(), std::back_inserter(results));
     }
@@ -120,6 +170,12 @@ std::vector<AprioriSolverResultLine> AprioriSolver::Solve(int min_support) const
 
 unsigned int AprioriSolver::Size() const { return records.size(); }
 
+/**
+ * Initialize apriori solver with reading transactions from filepath
+ * which is served as an function argument
+ * 
+ * @param path filepath of input file which contains all transactions by tsv
+ */
 AprioriSolver::AprioriSolver(const std::string &path) {
     char * buf = new char[1024];
 
