@@ -78,7 +78,7 @@ class DecisionTree:
     prev = self.entropy(indices)
     sub_indices = self.split_by_att(indices, att)
     ig = prev - sum([self.entropy(s) * len(s) for s in sub_indices if len(s) > 0]) / indices.shape[0]
-    return ig / self.intrinsic_value(sub_indices)
+    return ig / (self.intrinsic_value(sub_indices) + 1e-8)
   
   def gini(self, indices, att):
     sub_indices = self.split_by_att(indices, att)
