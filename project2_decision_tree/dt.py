@@ -17,11 +17,11 @@ def main():
   fp_test  = sys.argv[2] 
   fp_output = sys.argv[3]
 
-  df_train = pd.read_csv(fp_train, sep='\t').to_numpy()
-  df_test  = pd.read_csv(fp_test,  sep='\t').to_numpy()
+  df_train = pd.read_csv(fp_train, sep='\t')
+  df_test  = pd.read_csv(fp_test,  sep='\t')
 
-  train_records, tbs = encode_category(df_train)
-  test_records, tbs = encode_category_by_tbs(test_df, tbs)
+  train_records, tbs = encode_category(df_train.to_numpy())
+  test_records, tbs = encode_category_by_tbs(df_test.to_numpy(), tbs)
   dec = build_decoder(tbs)
 
   dt = DecisionTree(train_records, tbs)
@@ -30,6 +30,5 @@ def main():
   df_test[df_train.columns[-1]] = ans
   df_test.to_csv(fp_output, sep='\t')
     
-
 if __name__ == '__main__':
   main()
