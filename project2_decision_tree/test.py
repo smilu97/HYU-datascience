@@ -24,12 +24,19 @@ def test_with_dataset(dataset):
   path_test   = dataset[1]
   path_answer = dataset[2]
 
-  train_df = pd.read_csv(path_train, sep='\t').to_numpy()
-  test_df  = pd.read_csv(path_test, sep='\t').to_numpy()
+  train_df = pd.read_csv(path_train, sep='\t')
+  test_df  = pd.read_csv(path_test, sep='\t')
   ans_df   = pd.read_csv(path_answer, sep='\t').to_numpy()[:,-1]
 
-  train_records, tbs = encode_category(train_df)
-  test_records, tbs = encode_category_by_tbs(test_df, tbs)
+  data = [
+    train_df.to_numpy(),
+    np.pad(test_df.to_numpy(), ((0, 0), (0, 1)), 'constant', constant_values=train_df[train_df.columns[-1]][0]),
+  ]
+  data = np.concatenate(data, axis=0)
+  records, tbs = encode_category(data)
+  sz_train = len(train_df)
+  train_records = records[:sz_train]
+  test_records = records[sz_train:]
   dec = build_decoder(tbs)
 
   dt = DecisionTree(train_records, tbs)

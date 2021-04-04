@@ -20,8 +20,15 @@ def main():
   df_train = pd.read_csv(fp_train, sep='\t')
   df_test  = pd.read_csv(fp_test,  sep='\t')
 
-  train_records, tbs = encode_category(df_train.to_numpy())
-  test_records, tbs = encode_category_by_tbs(df_test.to_numpy(), tbs)
+  data = [
+    df_train.to_numpy(),
+    np.pad(df_test.to_numpy(), ((0, 0), (0, 1)), 'constant', constant_values=df_train[df_train.columns[-1]][0]),
+  ]
+  data = np.concatenate(data, axis=0)
+  records, tbs = encode_category(data)
+  sz_train = len(df_train)
+  train_records = records[:sz_train]
+  test_records = records[sz_train:]
   dec = build_decoder(tbs)
 
   dt = DecisionTree(train_records, tbs)
