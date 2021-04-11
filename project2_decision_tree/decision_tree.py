@@ -80,11 +80,22 @@ class DecisionTree:
     ig = prev - sum([self.entropy(s) * len(s) for s in sub_indices if len(s) > 0]) / indices.shape[0]
     return ig / (self.intrinsic_value(sub_indices) + 1e-8)
   
+  def gini_index(self, indices):
+    classes = self.db[indices, -1]
+    uniq, counts = np.unique(classes, return_counts=True)
+    probs = counts / indices.shape[0]
+    return 1 - np.sum(np.square(probs))
+
   def gini(self, indices, att):
+    prev = self.gini_index(indices)
     sub_indices = self.split_by_att(indices, att)
-    pbs = np.array([i.size for i in sub_indices if i.size > 0])
-    pbs = pbs / np.sum(pbs)
-    return 1 - np.sum(np.square(pbs))
+    return prev - sum([self.gini_index(s) * len(s) for s in sub_indices if len(s) > 0]) / indices.shape[0]
+  
+  def gini_ratio(self, indices, att):
+    prev = self.gini_index(indices)
+    sub_indices = self.split_by_att(indices, att)
+    ig = prev - sum([self.gini_index(s) * len(s) for s in sub_indices if len(s) > 0]) / indices.shape[0]
+    return ig / (self.intrinsic_value(sub_indices) + 1e-8)
 
   def split_by_att(self, indices, att):
     sz_sub = self.col_sz[att]
