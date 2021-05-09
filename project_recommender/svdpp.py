@@ -20,24 +20,25 @@ class SVDPPModel(tf.keras.Model):
             embeddings_initializer='uniform')
         self.user_bias = tf.keras.layers.Embedding(self.num_users, 1, input_length=1,
             embeddings_regularizer=tf.keras.regularizers.L2(self.reg_lambda),
-            embeddings_initializer='zeros')
+            embeddings_initializer=tf.keras.initializers.Constant(0.0))
         self.item_bias = tf.keras.layers.Embedding(self.num_items, 1, input_length=1,
             embeddings_regularizer=tf.keras.regularizers.L2(self.reg_lambda),
-            embeddings_initializer='zeros')
+            embeddings_initializer=tf.keras.initializers.Constant(0.0))
         self.user_reshape = tf.keras.layers.Reshape((self.embed_size,))
         self.item_reshape = tf.keras.layers.Reshape((self.embed_size,))
         self.dot = tf.keras.layers.Dot(axes=(1, 1))
-        self.user_bias_reshape = tf.keras.layers.Reshape((1,))
-        self.item_bias_reshape = tf.keras.layers.Reshape((1,))
+        self.mult = tf.keras.layers.Multiply()
+        self.user_bias_reshape = tf.keras.layers.Reshape(())
+        self.item_bias_reshape = tf.keras.layers.Reshape(())
         self.concatenate = tf.keras.layers.Concatenate(axis=1)
 
         self.user_inference = tf.keras.Sequential()
         for sz in self.inference_sizes:
-            self.user_inference.add(tf.keras.layers.Dense(sz))
+            self.user_inference.add(tf.keras.layers.Dense(sz, activation='tanh', kernel_regularizer=tf.keras.regularizers.L2(self.reg_lambda)))
 
         self.item_inference = tf.keras.Sequential()
         for sz in self.inference_sizes:
-            self.item_inference.add(tf.keras.layers.Dense(sz))
+            self.item_inference.add(tf.keras.layers.Dense(sz, activation='tanh', kernel_regularizer=tf.keras.regularizers.L2(self.reg_lambda)))
 
     def call(self, inputs):
         user_input = inputs[0]
@@ -50,6 +51,8 @@ class SVDPPModel(tf.keras.Model):
         q = self.item_reshape(q)
         q = self.item_inference(q)
         pq = self.dot([p, q])
+        print('pq:', pq)
+        # pq = tf.math.reduce_sum(self.mult([p, q]), axis=1)
         bu = self.user_bias(user_input)
         bu = self.user_bias_reshape(bu)
         bi = self.item_bias(item_input)

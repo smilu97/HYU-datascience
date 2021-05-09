@@ -31,7 +31,8 @@ def test_svdpp():
     test_ratings = test[:, 2]
 
     def get_test_mse():
-        errors = model.predict([test_users, test_items]).reshape((-1,)) - test_ratings
+        preds = model.predict([test_users, test_items])
+        errors = preds.reshape((-1,)) - test_ratings
         return np.mean(np.abs(errors))
 
     print('mu:', mu)
