@@ -4,6 +4,7 @@
 from typing import List, Callable, Tuple, DefaultDict
 from unionfind import UnionFind
 from collections import defaultdict
+from geocoding import Geocoding
 
 import numpy as np
 
@@ -40,8 +41,14 @@ def dbscan(
     sz = len(items)
     dim = items[0].data.shape[-1]
     arr = np.array([x.data for x in items], dtype=np.float64)
-    adj = l2_distance(arr.reshape((sz, 1, dim)) - arr) <= eps # adjacent matrix
-    neighbors = [[i for i in range(sz) if nbs[i]] for nbs in adj]
+
+    geo = Geocoding(arr, eps)
+    neighbors = [
+        [x for x in geo.neighbors(arr[i], rg=1)
+            if fn_distance(arr[i] - arr[x]) <= eps
+        ]
+        for i in range(sz)
+    ]
     is_core = np.array([len(i) for i in neighbors]) >= min_pts
     is_noise = np.zeros(sz)
     uf = UnionFind(sz)
