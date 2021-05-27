@@ -39,7 +39,6 @@ def dbscan(
     '''
     
     sz = len(items)
-    dim = items[0].data.shape[-1]
     arr = np.array([x.data for x in items], dtype=np.float64)
 
     geo = Geocoding(arr, eps)
@@ -58,13 +57,11 @@ def dbscan(
                 if is_core[q]:
                     uf.merge(p, q)
         else:
-            found = False
-            for q in neighbors[p]:
-                if is_core[q]:
-                    found = True
-                    uf.merge(p, q)
-                    break
-            if not found: is_noise[p] = 1
+            core_neighbors = [q for q in neighbors[p] if is_core[q]]
+            if len(core_neighbors) == 0:
+                is_noise[p] = 1
+            else:
+                uf.merge(p, min(core_neighbors))
 
     clusters: DefaultDict[int, List[int]] = defaultdict(list)
     for i in range(sz):

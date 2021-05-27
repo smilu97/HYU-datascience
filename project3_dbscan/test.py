@@ -37,6 +37,12 @@ colors = (
     (1, 0, 1, 0.5),
     (0, 1, 1, 0.5),
     (0, 0, 0, 0.5),
+    (0.6, 0, 0, 0.5),
+    (0, 0.6, 0, 0.5),
+    (0, 0, 0.6, 0.5),
+    (0.6, 0.6, 0, 0.5),
+    (0.6, 0, 0.6, 0.5),
+    (0, 0.6, 0.6, 0.5),
 )
 
 def clusters_into_dict(cs: List[List[int]]):
@@ -105,12 +111,12 @@ def main():
         for l in text_input.split('\n') if len(l) > 0
     ]
     items = [DBScanItem(int(d[0]), d[1:]) for d in input_data]
-    sz = len(items)
+    # sz = len(items)
     
     text_clusters = [
         open(fp, 'r').read() for fp in ideal_clusters_filepaths[index]
     ]
-    ideal_clusters = [
+    _ideal_clusters = [
         [int(x) for x in s.split('\n') if len(x) > 0] for s in text_clusters
     ]
 
