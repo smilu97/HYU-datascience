@@ -10,7 +10,7 @@ parser = ArgumentParser('clustering')
 parser.add_argument('input', type=str, help='input filename')
 parser.add_argument('n', type=int, help='the maximum number of clusters to emit')
 parser.add_argument('eps', type=float, help='maximum distance of neighbor')
-parser.add_argument('min_pts', type=int, help='the minimum number of neighbors to be core')
+parser.add_argument('min_pts', type=int, help='the minimum number of neighbors of core')
 
 def main():
     args = parser.parse_args()
