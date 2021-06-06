@@ -6,7 +6,7 @@ from typing import List, Dict
 
 import numpy as np
 
-parser = ArgumentParser('DBScan assignment 2016025241 Kim YoungJin')
+parser = ArgumentParser('clustering')
 parser.add_argument('input', type=str, help='input filename')
 parser.add_argument('n', type=int, help='the maximum number of clusters to emit')
 parser.add_argument('eps', type=float, help='maximum distance of neighbor')
