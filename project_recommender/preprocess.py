@@ -39,7 +39,7 @@ def augment_data(tbl, n, m):
             augments.append([i, j, 1, t])
     return np.array(augments, dtype=np.int64)
 
-def read_dataset(prefix, augment=True):
+def read_dataset(prefix, augment=False):
     df_base = pd.read_csv('{}.base'.format(prefix), sep='\t', header=None)
     df_test = pd.read_csv('{}.test'.format(prefix), sep='\t', header=None)
     np_base = df_base.to_numpy()
