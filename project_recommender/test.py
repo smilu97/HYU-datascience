@@ -8,18 +8,17 @@ from preprocess import read_dataset
 from svdpp import SVDPPModel
 
 parser = argparse.ArgumentParser('Long term project: recommender system')
-parser.add_argument('--epochs', '-e', type=int, default=40, help='epochs')
+parser.add_argument('--epochs', '-e', type=int, default=30, help='epochs')
 parser.add_argument('--batch-size', '-b', type=int, default=2000, help='batch size')
 parser.add_argument('--dim', '-d', type=int, default=12, help='The size of hidden factor')
-parser.add_argument('--validation-split', '-v', type=float, default=0.1, help='portion of validation split')
 parser.add_argument('--reg-lambda', type=float, default=0.000000, help='regularization factor')
 parser.add_argument('--lr', '-r', type=float, default=0.001, help='learning rate')
 parser.add_argument('--output', '-o', type=str, default='output.txt', help='output filepath')
-parser.add_argument('--sz-related', type=int, default=19, help='the maximum number of related objects')
+parser.add_argument('--sz-related', type=int, default=30, help='the maximum number of related objects')
 parser.add_argument('--n-time-bins', type=int, default=30, help='the number of item time bins')
 parser.add_argument('--augment', action='store_true', help='run data augmentation')
 
-def split_data(data, nu, ni, sz_related=20):
+def extract_data(data, nu, ni, sz_related=20):
     n = data.shape[0]
 
     users = data[:, 0].reshape((-1, 1))
@@ -81,7 +80,6 @@ def main():
 
     epochs = args.epochs
     batch_size = args.batch_size
-    validation_split = args.validation_split
     k = args.dim
     reg_lambda = args.reg_lambda
     lr = args.lr
@@ -119,12 +117,12 @@ def main():
         learning_rate=lr, beta_1=0.9, beta_2=0.999, epsilon=1e-07, amsgrad=False)
     model.compile(optimizer=optimizer, loss='mean_squared_error', metrics=[])
 
-    test_users, test_items, test_ratings, test_times, _, _, _, _, _, _, _ = split_data(test, nu=nu, ni=ni, sz_related=sz_related)
+    test_users, test_items, test_ratings, test_times, _, _, _, _, _, _, _ = extract_data(test, nu=nu, ni=ni, sz_related=sz_related)
     users, items, ratings, times, \
         ur, ir, \
         min_item_times, max_item_times, \
         min_user_times, max_user_times, \
-        user_time_means = split_data(train, nu=nu, ni=ni, sz_related=sz_related)
+        user_time_means = extract_data(train, nu=nu, ni=ni, sz_related=sz_related)
 
     def get_item_time_bins(_times, _items):
         min_it = min_item_times[_items.flatten()]
