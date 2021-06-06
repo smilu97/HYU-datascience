@@ -7,17 +7,18 @@ import tensorflow as tf
 from tensorflow.keras.layers import Layer
 
 class Attention(Layer):
-    def __init__(self, k):
+    def __init__(self, k, element_wise=True):
         super(Attention, self).__init__()
         self.k = k
+        att_out = k if element_wise else 1
 
         w_init = tf.random_normal_initializer()
         self.att_w = tf.Variable(
-            initial_value=w_init(shape=(2*k, k), dtype=tf.float32),
+            initial_value=w_init(shape=(2*k, att_out), dtype=tf.float32),
             trainable=True,
         )
         self.att_b = tf.Variable(
-            initial_value=w_init(shape=(k,), dtype=tf.float32),
+            initial_value=w_init(shape=(att_out,), dtype=tf.float32),
             trainable=True,
         )
     
