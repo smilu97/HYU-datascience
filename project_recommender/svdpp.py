@@ -3,7 +3,9 @@ import tensorflow as tf
 
 from attention import Attention
 
-# https://arxiv.org/pdf/1803.03502.pdf
+# ref: https://arxiv.org/pdf/1803.03502.pdf#Attentive-Graph-based-CF-model
+# ref: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.379.1951&rep=rep1&type=pdf
+
 class SVDPPModel(tf.keras.Model):
     '''
     Attentive timeSVD++
@@ -77,17 +79,17 @@ class SVDPPModel(tf.keras.Model):
         self.xq_attention = Attention(k=self.embed_size)
 
         '''
-        Add non-linearity on hidden factors 
+        Add non-linearity on hidden factors
         '''
 
         # self.inference_sizes = []
         # self.user_inference = tf.keras.Sequential()
         # for sz in self.inference_sizes:
-        #     self.user_inference.add(tf.keras.layers.Dense(sz, activation='tanh', kernel_regularizer=tf.keras.regularizers.L2(self.reg_lambda)))
+        #     self.user_inference.add(tf.keras.layers.Dense(sz, activation='relu', kernel_regularizer=tf.keras.regularizers.L2(self.reg_lambda)))
 
         # self.item_inference = tf.keras.Sequential()
         # for sz in self.inference_sizes:
-        #     self.item_inference.add(tf.keras.layers.Dense(sz, activation='tanh', kernel_regularizer=tf.keras.regularizers.L2(self.reg_lambda)))
+        #     self.item_inference.add(tf.keras.layers.Dense(sz, activation='relu', kernel_regularizer=tf.keras.regularizers.L2(self.reg_lambda)))
 
     def call(self, inputs):
         user_input, item_input, user_times, user_relateds, item_relateds, item_time_bins, u_time_means = inputs
