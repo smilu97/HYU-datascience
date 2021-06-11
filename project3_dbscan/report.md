@@ -20,7 +20,7 @@
 ```python
 class Geocoding:
     '''
-    Assume N-dim euclid space is quantimized by certain length (`box_size`),
+    Assume N-dim euclid space is quantumized by certain length (`box_size`),
     and each points in space are mapped into certain quantumized hyper-cube
     many-to-one. Points in same hyper-cube satisfy locality, and we can easily
     find neighbor hyper-cube.
@@ -173,6 +173,9 @@ UnionFind를 통해 자신이 속한 트리의 부모가 같은 것들끼리 (�
 
 ```sh
 ./clustering.py input_filename n eps min_pts
+# example: ./clustering.py input1.txt 8 15 22
+# example: ./clustering.py input2.txt 5 2 7
+# example: ./clustering.py input3.txt 4 5 5
 ```
 
 #### Usage
@@ -184,7 +187,7 @@ positional arguments:
   input       input filename
   n           the maximum number of clusters to emit
   eps         maximum distance of neighbor
-  min_pts     the minimum number of neighbors to be core
+  min_pts     the minimum number of neighbors of core
 
 optional arguments:
   -h, --help  show this help message and exit
