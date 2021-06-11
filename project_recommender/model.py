@@ -1,3 +1,6 @@
+# author: smilu97
+# created at: 21-05-27 18:15
+
 import numpy as np
 import tensorflow as tf
 
@@ -46,33 +49,41 @@ class SVDPPModel(tf.keras.Model):
         Embeddings
         '''
 
-        self.user_embedding = tf.keras.layers.Embedding(self.num_users, self.embed_size, input_length=1,
+        mask_zero = True
+
+        self.user_embedding = tf.keras.layers.Embedding(self.num_users + 1, self.embed_size, input_length=1,
             embeddings_regularizer=tf.keras.regularizers.L2(self.reg_lambda),
-            embeddings_initializer='uniform')
+            embeddings_initializer='normal',
+            mask_zero=mask_zero)
         self.user_x_embedding = tf.keras.layers.Embedding(self.num_users + 1, self.embed_size, input_length=sz_related,
             embeddings_regularizer=tf.keras.regularizers.L2(self.reg_lambda),
-            embeddings_initializer='uniform',
-            mask_zero=True)
-        self.user_tu_embedding = tf.keras.layers.Embedding(self.num_users, 1, input_length=1,
+            embeddings_initializer='normal',
+            mask_zero=mask_zero)
+        self.user_tu_embedding = tf.keras.layers.Embedding(self.num_users + 1, 1, input_length=1,
             embeddings_regularizer=tf.keras.regularizers.L2(self.reg_lambda),
-            embeddings_initializer='uniform')
-        self.user_alpha_embedding = tf.keras.layers.Embedding(self.num_users, 1, input_length=1,
+            embeddings_initializer='normal',
+            mask_zero=mask_zero)
+        self.user_alpha_embedding = tf.keras.layers.Embedding(self.num_users + 1, 1, input_length=1,
             embeddings_regularizer=tf.keras.regularizers.L2(self.reg_lambda),
-            embeddings_initializer='uniform')
-        self.item_embedding = tf.keras.layers.Embedding(self.num_items, self.embed_size, input_length=1,
+            embeddings_initializer='normal',
+            mask_zero=mask_zero)
+        self.item_embedding = tf.keras.layers.Embedding(self.num_items + 1, self.embed_size, input_length=1,
             embeddings_regularizer=tf.keras.regularizers.L2(self.reg_lambda),
-            embeddings_initializer='uniform')
+            embeddings_initializer='normal',
+            mask_zero=mask_zero)
         self.item_y_embedding = tf.keras.layers.Embedding(self.num_items + 1, self.embed_size, input_length=sz_related,
             embeddings_regularizer=tf.keras.regularizers.L2(self.reg_lambda),
-            embeddings_initializer='uniform',
-            mask_zero=True)
-        self.user_bias = tf.keras.layers.Embedding(self.num_users, 1, input_length=1,
+            embeddings_initializer='normal',
+            mask_zero=mask_zero)
+        self.user_bias = tf.keras.layers.Embedding(self.num_users + 1, 1, input_length=1,
             embeddings_regularizer=tf.keras.regularizers.L2(self.reg_lambda),
-            embeddings_initializer=tf.keras.initializers.Constant(0.0))
-        self.item_bias = tf.keras.layers.Embedding(self.num_items, 1, input_length=1,
+            embeddings_initializer=tf.keras.initializers.Constant(0.0),
+            mask_zero=mask_zero)
+        self.item_bias = tf.keras.layers.Embedding(self.num_items + 1, 1, input_length=1,
             embeddings_regularizer=tf.keras.regularizers.L2(self.reg_lambda),
-            embeddings_initializer=tf.keras.initializers.Constant(0.0))
-        self.item_time_bin_bias = tf.keras.layers.Embedding(self.num_items * self.n_time_bins, 1, input_length=1,
+            embeddings_initializer=tf.keras.initializers.Constant(0.0),
+            mask_zero=mask_zero)
+        self.item_time_bin_bias = tf.keras.layers.Embedding((self.num_items + 1) * self.n_time_bins, 1, input_length=1,
             embeddings_regularizer=tf.keras.regularizers.L2(self.reg_lambda),
             embeddings_initializer=tf.keras.initializers.Constant(0.0))
         self.yp_attention = Attention(k=self.embed_size)
@@ -92,7 +103,7 @@ class SVDPPModel(tf.keras.Model):
         #     self.item_inference.add(tf.keras.layers.Dense(sz, activation='relu', kernel_regularizer=tf.keras.regularizers.L2(self.reg_lambda)))
 
     def call(self, inputs):
-        user_input, item_input, user_times, user_relateds, item_relateds, item_time_bins, u_time_means = inputs
+        user_input, item_input, user_times, item_time_bins, user_relateds, item_relateds = inputs
         
         p = self.user_embedding(user_input)
         p = tf.reshape(p, (-1, self.embed_size,))
